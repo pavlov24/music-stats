@@ -34,15 +34,17 @@
 
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <div data-th-each="card : ${#numbers.sequence(1, 5)}" class="col-4">
-                    <div class="card text-bg-warning shadow-sm">
-                        <div class="row align-items-center justify-content-center">
-                            <div class="col-12">
-                                <div class="card-body text-center">
-                                    <h1 class="display-1" data-th-text="|Сущность #${card}|"></h1>
+                    <a href="/artists/">
+                        <div class="card text-bg-warning shadow-sm">
+                            <div class="row align-items-center justify-content-center">
+                                <div class="col-12">
+                                    <div class="card-body text-center">
+                                        <h1 class="display-1" data-th-text="|Сущность #${card}|"></h1>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
