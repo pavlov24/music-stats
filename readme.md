@@ -22,18 +22,6 @@
         </ul>
     </details>
     <details>
-        <summary>Трек (Track)</summary>
-        <ul>
-            <li>spotify uri</li>
-            <li>name</li>
-            <li>album_id</li>
-            <li>disk number</li>
-            <li>track number</li>
-            <li>duration</li>
-            <li>tempo</li>
-        </ul>
-    </details>
-    <details>
         <summary>Характеристики трека (track properties)</summary>
         <ul>
             <li>danceability</li>

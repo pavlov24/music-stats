@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать альбом</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">MusicStats</a>
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Главная</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <form action="/albums/edit" method="post">
+        <!-- Используем скрытое поле (hidden), чтобы незаметно пробрасывать в форму id записи -->
+        <!-- Используем data-th-value для задания значения полю -->
+        <input id="id" name="id" hidden data-th-value="${albumDTO.id}">
+        <input id="artistId" name="artistId" hidden data-th-value="${albumDTO.artist.id}">
+        <div class="row mb-3">
+          <label for="name" class="col-sm-2 col-form-label">Альбом</label>
+          <div class="col-8">
+            <input data-th-value="${albumDTO.name}" type="text" class="form-control" name="name" id="name">
+          </div>
+          <div
+                  class="alert alert-warning"
+                  data-th-text="${#fields.errors('albumDTO.name')}"
+                  data-th-if="${#fields.hasErrors('albumDTO.name')}"
+          ></div>
+        </div>
+        <div class="row mb-3">
+          <label for="spotifyId" class="col-sm-2 col-form-label">Spotify Id</label>
+          <div class="col-8">
+            <input data-th-value="${albumDTO.spotifyId}" type="text" class="form-control" name="spotifyId"
+                   id="spotifyId">
+          </div>
+          <div
+                  class="alert alert-warning"
+                  data-th-if="${#fields.hasErrors('albumDTO.spotifyId')}"
+                  data-th-each="err : ${#fields.errors('albumDTO.spotifyId')}"
+                  data-th-text="${err}"
+          ></div>
+
+        </div>
+        <div class="row mb-3">
+          <label for="spotifyId" class="col-sm-2 col-form-label">Ссылка на обложку</label>
+          <div class="col-8">
+            <input data-th-value="${albumDTO.imgUrl}" type="text" class="form-control" name="imgUrl"
+                   id="imgUrl">
+          </div>
+          <div
+                  class="alert alert-warning"
+                  data-th-if="${#fields.hasErrors('albumDTO.imgUrl')}"
+                  data-th-each="err : ${#fields.errors('albumDTO.imgUrl')}"
+                  data-th-text="${err}"
+          ></div>
+
+        </div>
+        <div class="row mb-3">
+          <label for="spotifyId" class="col-sm-2 col-form-label">Ссылка на обложку</label>
+          <div class="col-8">
+            <input data-th-value="${albumDTO.releaseDate}" type="date" class="form-control" name="releaseDate"
+                   id="releaseDate">
+          </div>
+          <div
+                  class="alert alert-warning"
+                  data-th-if="${#fields.hasErrors('albumDTO.releaseDate')}"
+                  data-th-each="err : ${#fields.errors('albumDTO.releaseDate')}"
+                  data-th-text="${err}"
+          ></div>
+
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+</html>
