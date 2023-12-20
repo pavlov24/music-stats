@@ -12,7 +12,7 @@
         <a class="navbar-brand" href="#">MusicStats</a>
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Главная</a>
+                <a class="nav-link active" aria-current="page" href="/">Главная</a>
             </li>
         </ul>
     </div>
@@ -33,13 +33,13 @@
         <div class="container">
 
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                <div data-th-each="card : ${#numbers.sequence(1, 5)}" class="col-4">
-                    <a href="/artists/">
+                <div data-th-each="card : ${links}" class="col-4">
+                    <a data-th-href="'/'+${card.value}">
                         <div class="card text-bg-warning shadow-sm">
                             <div class="row align-items-center justify-content-center">
                                 <div class="col-12">
                                     <div class="card-body text-center">
-                                        <h1 class="display-1" data-th-text="|Сущность #${card}|"></h1>
+                                        <h1 class="display-3" data-th-text="${card.key}"></h1>
                                     </div>
                                 </div>
                             </div>
