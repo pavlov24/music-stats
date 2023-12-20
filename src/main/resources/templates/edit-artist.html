@@ -25,7 +25,7 @@
                 <!-- Используем скрытое поле (hidden), чтобы незаметно пробрасывать в форму id записи -->
                 <!-- Используем data-th-value для задания значения полю -->
                 <input id="id" name="id" hidden data-th-value="${artistDTO.id}">
-                <div class="row mb-3">
+                <div class="row my-3">
                     <label for="name" class="col-sm-2 col-form-label">Исполнитель</label>
                     <div class="col-8">
                         <input data-th-value="${artistDTO.name}" type="text" class="form-control" name="name" id="name">
@@ -50,7 +50,29 @@
                     ></div>
 
                 </div>
-                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <div class="row container text-center">
+                    <div class="row">
+                        <div
+                                data-th-each="genre: ${genres}"
+                                class="col-3"
+                        >
+                            <div class="form-check border">
+                                <label data-th-for="|genre-${genre.id}|"
+                                       class="form-check-label"
+                                       data-th-text="${genre.name}"
+                                ></label>
+                                <input data-th-id="|genre-${genre.id}|"
+                                       type="checkbox" class="form-check-input"
+                                       data-th-name="|genre-${genre.id}|"
+                                       data-th-checked="${#maps.containsKey(genresValue, genre.name)}"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
             </form>
         </div>
     </div>

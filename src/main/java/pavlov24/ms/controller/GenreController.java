@@ -1,10 +1,12 @@
 package pavlov24.ms.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,30 +16,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pavlov24.ms.dto.ArtistDTO;
+import pavlov24.ms.dto.GenreDTO;
 import pavlov24.ms.entity.Artist;
 import pavlov24.ms.entity.Genre;
-import pavlov24.ms.repository.ArtistRepository;
 import pavlov24.ms.repository.GenreRepository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Slf4j // позволяет выводить информацию в логи через log.info()
-@Controller // помечаем класс как контроллер
-@RequestMapping("/artists/") // название сущности во множественном числе
-@RequiredArgsConstructor // генерация конструктора со всеми необходимыми final-полями
-public class ArtistController {
+@Slf4j
+@Controller
+@RequestMapping("genres/")
+@RequiredArgsConstructor
+public class GenreController {
 
-    // ссылка интерфейсная, саму реализацию передает нам Spring
-    private final ArtistRepository artistRepository;
     private final GenreRepository genreRepository;
 
-    @GetMapping // без параметров, следовательно, реагируем на GET /artists/
-    public String index(Model model) {
-        // findAll() - возвращает все записи в таблице
-        model.addAttribute("list", artistRepository.findAll());
-        return "artists"; // имя шаблона
+    @GetMapping
+    public String index(Model model, Integer pageNumber) {
+        if (pageNumber == null) pageNumber = 0;
+        // findAll() - возвращет все записи в таблице
+        model.addAttribute("list",  genreRepository.findAll(PageRequest.of(pageNumber,10)));
+
+        return "genres"; // имя шаблона
     }
 
     /**
@@ -48,17 +49,17 @@ public class ArtistController {
      * @return название шаблона, на который нужно перейти
      */
     @PostMapping("add")
-    public String add(@Valid ArtistDTO request, BindingResult result, Model model) {
-        log.info("add artist request {}, binding result = {}", request, result.hasErrors());
+    public String add(@Valid GenreDTO request, BindingResult result, Model model) {
+        log.info("add genre request {}, binding result = {}", request, result.hasErrors());
         if (!result.hasErrors()) { // проверка, имеются ли ошибки валидации
             // если ошибок нет, то сохраняем объект типа Artist в базу данных
-            artistRepository.save(request.toEntity());
+            genreRepository.save(request.toEntity());
             // redirect: - позволяет выполнить переадресацию к нужному url
             // здесь мы фактически перебрасываем пользователя обратно на страницу с таблицей
             // это нужно для того, чтобы в модель не попал объект ArtistDTO
             // иначе у нас в полях формы для добавления новых объектов появятся те значения,
             // которые до этого были введены
-            return "redirect:/artists/";
+            return "redirect:/genres/";
         } else { // если ошибки все же есть, логируем их
             log.info("has errors: {}", result.getFieldErrors()
                     .stream()
@@ -68,7 +69,7 @@ public class ArtistController {
         // здесь мы не просто переходим по /artists/,
         // но в модель еще будет добавлена информация о том, что ввел пользователь,
         // а также информация об ошибках валидации, которые мы подсветим пользователю
-        return index(model);
+        return index(model, null);
     }
 
     /**
@@ -79,51 +80,34 @@ public class ArtistController {
      */
     @GetMapping("edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
-        Optional<Artist> artist = artistRepository.findById(id);
+        Optional<Genre> artist = genreRepository.findById(id);
         // для совместимости с кодом из шаблона на добавление объекта
         // будем использовать ключ artistDTO в модели
-        artist.ifPresent(value -> {
-            model.addAttribute("artistDTO", value);
-            model.addAttribute("genresValue", value.getGenres()
-                    .stream()
-                    .collect(Collectors.toMap(Genre::getName, genre -> true)));
-        });
+        artist.ifPresent(value -> model.addAttribute("genreDTO", value));
 
-        model.addAttribute("genres", genreRepository.findAll());
-
-        return "edit-artist";
+        return "edit-genre";
     }
 
     @PostMapping("edit")
-    public String edit(@Valid ArtistDTO request, HttpServletRequest servletRequest, BindingResult result) {
-        log.info("edit artist request {}, binding result = {}", request, result.hasErrors());
+    public String edit(@Valid GenreDTO request, BindingResult result) {
+        log.info("edit genre request {}, binding result = {}", request, result.hasErrors());
         if (!result.hasErrors()) { // проверка, имеются ли ошибки валидации
-            List<Long> genreIds = servletRequest.getParameterMap().keySet()
-                    .stream()
-                    .filter(k -> k.startsWith("genre-"))
-                    .map(k -> k.replace("genre-",""))
-                    .map(Long::parseLong)
-                    .collect(Collectors.toList());
-
-            List<Genre> genres = genreRepository.findAllById(genreIds);
-            Artist artist = request.toEntity();
-            artist.setAlbums(artistRepository.findById(artist.getId()).get().getAlbums());
-            artist.setGenres(genres);
-            artistRepository.save(artist);
-            return "redirect:/artists/";
+            genreRepository.save(request.toEntity());
+            return "redirect:/genres/";
         } else {
             log.info("has errors: {}", result.getFieldErrors()
                     .stream()
                     .map(FieldError::getField)
                     .collect(Collectors.toList()));
         }
-        return "edit-artist";
+        return "edit-genre";
     }
 
     @PostMapping("remove")
     public String remove(@Positive Long id) {
-        artistRepository.deleteById(id);
-        return "redirect:/artists/";
+        genreRepository.deleteById(id);
+        return "redirect:/genres/";
     }
+
 
 }
