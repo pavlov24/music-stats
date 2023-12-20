@@ -23,18 +23,18 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
-@RequestMapping("/albums/")
+@RequestMapping("artists/{artistId}/albums/")
 @RequiredArgsConstructor
 public class AlbumController {
 
     private final AlbumRepository albumRepository;
     private final ArtistRepository artistRepository;
 
-    @GetMapping
-    public String index(Model model) {
-        model.addAttribute("list", albumRepository.findAll());
-        model.addAttribute("artists", artistRepository.findAll());
-        return "albums"; // имя шаблона
+    @GetMapping("add")
+    public String add(@PathVariable Long artistId, Model model) {
+        log.info("add album request for artist with id = {}", artistId);
+        model.addAttribute("artist", artistRepository.findById(artistId).get());
+        return "album-add";
     }
 
     /**
@@ -60,7 +60,7 @@ public class AlbumController {
             // это нужно для того, чтобы в модель не попал объект ArtistDTO
             // иначе у нас в полях формы для добавления новых объектов появятся те значения,
             // которые до этого были введены
-            return "redirect:/albums/";
+            return "redirect:/artists/" + request.getArtistId();
         } else { // если ошибки все же есть, логируем их
             log.info("has errors: {}", result.getFieldErrors()
                     .stream()
@@ -70,7 +70,7 @@ public class AlbumController {
         // здесь мы не просто переходим по /artists/,
         // но в модель еще будет добавлена информация о том, что ввел пользователь,
         // а также информация об ошибках валидации, которые мы подсветим пользователю
-        return index(model);
+        return add(request.getArtistId(), model);
     }
 
     /**

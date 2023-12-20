@@ -40,6 +40,13 @@ public class ArtistController {
         return "artists"; // имя шаблона
     }
 
+
+    @GetMapping("{artistId}")
+    public String artist(@PathVariable Long artistId, Model model) {
+        model.addAttribute("artist", artistRepository.findById(artistId).get());
+        return "artist-view";
+    }
+
     /**
      * Принимаем новую запись.
      * @param request - специальный тип объектов, где декларативно задана валидация полей
