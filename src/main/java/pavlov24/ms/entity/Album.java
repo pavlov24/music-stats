@@ -5,6 +5,7 @@ import lombok.Data;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -21,5 +22,9 @@ public class Album {
 
     @ManyToOne
     private Artist artist;
+
+    @OneToMany
+    @JoinColumn(name = "album_id")
+    private List<Track> tracks;
 
 }
