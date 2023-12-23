@@ -2,6 +2,7 @@ package pavlov24.ms.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class Artist {
 
     @OneToMany()
     @JoinColumn(name = "artist_id")
+    @ToString.Exclude // аннотация исключает данное поле при формировании строкового представления
     private List<Album> albums;
 
     @ManyToMany

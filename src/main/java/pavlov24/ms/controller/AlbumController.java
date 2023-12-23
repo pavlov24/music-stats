@@ -1,9 +1,13 @@
 package pavlov24.ms.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,20 +19,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pavlov24.ms.dto.AlbumDTO;
 import pavlov24.ms.entity.Album;
 import pavlov24.ms.entity.Artist;
+import pavlov24.ms.entity.User;
 import pavlov24.ms.repository.AlbumRepository;
 import pavlov24.ms.repository.ArtistRepository;
+import pavlov24.ms.service.UserService;
 
+import java.security.Principal;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
+@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("artists/{artistId}/albums/")
 @RequiredArgsConstructor
 public class AlbumController {
 
     private final AlbumRepository albumRepository;
     private final ArtistRepository artistRepository;
+    private final UserService userService;
+
+
+    @PostMapping("like")
+    @PreAuthorize("hasAuthority('USER')")
+    public String like(Long albumId, @PathVariable Long artistId, Authentication authentication) {
+        var albumOptional = albumRepository.findById(albumId);
+        if (albumOptional.isPresent()) {
+            var user = (User) authentication.getPrincipal();
+            user = (User) userService.loadUserByUsername(user.getUsername());
+            log.info("user id = {}", user.getId());
+            if (!user.getAlbums().contains(albumOptional.get())) {
+                user.getAlbums().add(albumOptional.get());
+                userService.save(user);
+            } else {
+                user.getAlbums().remove(albumOptional.get());
+                userService.save(user);
+            }
+        }
+        return "redirect:/artists/" + artistId;
+    }
+
 
     @GetMapping("add")
     public String add(@PathVariable Long artistId, Model model) {

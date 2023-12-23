@@ -25,14 +25,14 @@
         <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
                 <h1 class="fw-light">Описание</h1>
-                <p class="lead text-body-secondary">
+                <p data-th-text="${#authentication.name}" class="lead text-body-secondary">
                     Подробное описание
                 </p>
             </div>
         </div>
     </section>
 
-    <div class="album py-5 bg-body-tertiary">
+    <div data-sec-authorize="isAuthenticated()" class="album py-5 bg-body-tertiary">
         <div class="container">
 
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">

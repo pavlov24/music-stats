@@ -63,7 +63,7 @@
                                     </a>
                                     <!-- используем data-th-href задания параметризированной ссылки  -->
                                     <!-- используем || как параметризированную строку  -->
-                                    <a data-th-href="@{|${artist.id}/albums/edit/${album.id}|}" class="btn btn-warning">
+                                    <a data-sec-authorize="hasAuthority('ADMIN')" data-th-href="@{|${artist.id}/albums/edit/${album.id}|}" class="btn btn-warning">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                              fill="currentColor"
                                              class="bi bi-pen" viewBox="0 0 16 16">
@@ -71,10 +71,23 @@
                                         </svg>
                                     </a>
                                     <!-- Оборачиваем кнопку и поле в форму, так как все изменения выполняем через POST метод -->
-                                    <form data-th-action="@{|${artist.id}/albums/remove|}" method="post">
+                                    <form data-sec-authorize="hasAuthority('ADMIN')" data-th-action="@{|${artist.id}/albums/remove|}" method="post">
                                         <!-- Используем скрытое поле (hidden), чтобы незаметно пробрасывать в форму id записи -->
                                         <!-- Используем data-th-value для задания значения полю -->
                                         <input id="id" name="id" hidden data-th-value="${artist.id}">
+                                        <button type="submit" class="btn btn-danger">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor"
+                                                 class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"></path>
+                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"></path>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                    <form data-sec-authorize="hasAuthority('USER')" data-th-action="@{|${artist.id}/albums/like|}" method="post">
+                                        <!-- Используем скрытое поле (hidden), чтобы незаметно пробрасывать в форму id записи -->
+                                        <!-- Используем data-th-value для задания значения полю -->
+                                        <input id="albumId" name="albumId" hidden data-th-value="${album.id}">
                                         <button type="submit" class="btn btn-danger">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                  fill="currentColor"
@@ -88,7 +101,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-auto align-self-center">
+                    <div data-sec-authorize="hasAuthority('ADMIN')" class="col-auto align-self-center">
                         <div class="card border-0" style="min-width:250px">
                             <div class="row justify-content-center g-0">
                                 <div class="col-auto">
